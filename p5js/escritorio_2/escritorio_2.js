@@ -1,50 +1,70 @@
-//Creating animations
+// Archivo actualizado: escritorio_2.js con animación de entrada fluida y escala constante
 
-//animations like p5 images should be stored in variables
-//in order to be displayed during the draw cycle
 let spr;
-let img;
+let cnv;
+let startAnimation = true;
+let animationProgress = 0;
 
-//it's advisable (but not necessary) to load the images in the preload function
-//of your sketch otherwise they may appear with a little delay
 function preload() {
-  // create an animation from a sequence of numbered images
-  // NOTE: the web editor conversion of image names to file paths
-  // makes it so that we can't use the p5.play feature that
-  // fills in the numbers in between... so we have to list them all here.
- spr = createSprite(600, 300, 50, 100);
- 
- 
- 
+  // Carga de la animación del loro
+  spr = createSprite(-100, 300, 50, 100); // Empieza fuera de pantalla
   spr.addAnimation('standing',
-                     'data/loro_0.png',
-                     'data/loro_1.png',
-                     'data/loro_2.png',
-                     'data/loro_3.png',
-                     'data/loro_4.png',
-                     'data/loro_5.png',
-                     'data/loro_6.png',
-                     );
+                   'data/loro_0.png',
+                   'data/loro_1.png',
+                   'data/loro_2.png',
+                   'data/loro_3.png',
+                   'data/loro_4.png',
+                   'data/loro_5.png',
+                   'data/loro_6.png');
 }
 
 function setup() {
-  createCanvas(960, 500);
-  
+  cnv = createCanvas(960, 500);
+  cnv.style('z-index', '100'); // Canvas adelante
+  cnv.style('position', 'absolute');
+  cnv.style('top', '0');
+  cnv.style('left', '0');
+  cnv.style('pointer-events', 'none'); // No bloquear clicks
+
+  spr.position.x = -100;
+  spr.position.y = height / 2;
+  spr.scale = 0.5; // Fijamos escala constante para todo el vuelo
 }
 
 function draw() {
-  background(117,170,219);
- 
+  clear(); // Limpia el canvas manteniendo la transparencia
+
+  if (startAnimation) {
+    // Avanzar vuelo inicial
+    animationProgress += 2; // Velocidad de entrada
+    spr.position.x = -100 + animationProgress;
+    spr.position.y = height / 2 + sin(radians(animationProgress)) * 50; // Curvatura en Y
+
+    if (spr.position.x > 300) {
+      startAnimation = false; // Finalizar animación de entrada
+    }
+  } else {
+    // Movimiento normal restringido en X e Y
+    spr.position.x = lerp(spr.position.x, constrain(mouseX, 50, width - 50), 0.05);
+    spr.position.y = lerp(spr.position.y, constrain(mouseY, 120, height - 50), 0.1);
+  }
+
+  // Coordenadas aproximadas del botón "Descubre más"
+  let botonX = width / 2;
+  let botonY = 420;
+
+  // Distancia del loro al botón
+  let d = dist(spr.position.x, spr.position.y, botonX, botonY);
+
+  // Aceleración de la animación si está cerca del botón
+  if (d < 100) {
+    spr.animation.frameDelay = 2; // Aleteo rápido
+  } else {
+    spr.animation.frameDelay = 6; // Aleteo normal
+  }
+
   drawSprites();
 }
-function mouseMoved()
-{
-   if((mouseY>windowHeight* 0.1) && (mouseY<windowHeight* 0.9))
-   {
-    spr.position.y = mouseY;
-   }
-   else
-   {
-     spr.position.y = windowHeight * 0.5;
-   }
-}
+
+// Nota:
+// El loro ahora mantiene un tamaño constante desde la entrada hasta el seguimiento del mouse.
