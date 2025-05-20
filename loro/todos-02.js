@@ -17,19 +17,17 @@ function preload() {
 }
 
 function setup() {
-  const canvasHeight = 400;
-  cnv = createCanvas(windowWidth, canvasHeight);
-  cnv.position(0, 0);
-  cnv.style('z-index', '9999');
+  cnv = createCanvas(windowWidth, 120);
   cnv.style('position', 'absolute');
-  cnv.style('pointer-events', 'auto');
   cnv.style('top', '0');
   cnv.style('left', '0');
+  cnv.style('z-index', '5');
+  cnv.style('pointer-events', 'none');
 
   spr.position.x = -100;
-  spr.position.y = canvasHeight / 2;
+  spr.position.y = 60; // Centrado vertical en 120px
 
-  spr.scale = 0.4; // Tamaño fijo proporcional, sin deformar
+  spr.scale = 0.4; // Fijo para evitar deformaciones
 }
 
 function draw() {
@@ -38,14 +36,14 @@ function draw() {
   if (startAnimation) {
     animationProgress += 2;
     spr.position.x = -100 + animationProgress;
-    spr.position.y = height / 2 + sin(radians(animationProgress)) * 8;
+    spr.position.y = 60 + sin(radians(animationProgress)) * 8;
 
     if (spr.position.x > width / 2) {
       startAnimation = false;
     }
   } else {
     let targetX = constrain(mouseX, 50, width - 50);
-    let targetY = constrain(mouseY, 20, height - 20);
+    let targetY = constrain(mouseY, 20, 100);
     spr.position.x = lerp(spr.position.x, targetX, 0.05);
     spr.position.y = lerp(spr.position.y, targetY, 0.07);
   }
