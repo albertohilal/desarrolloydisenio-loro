@@ -1,3 +1,4 @@
+
 let spr;
 let spriteSheet;
 let animationFrames = [];
@@ -23,16 +24,14 @@ function setup() {
   cnv.style('top', '0');
   cnv.style('left', '0');
 
-  // Dividir el sprite sheet en frames individuales
   for (let i = 0; i < frameCount; i++) {
     let frame = spriteSheet.get(i * frameWidth, 0, frameWidth, frameHeight);
     animationFrames.push(frame);
   }
 
-  // Crear el sprite sin forzar dimensiones
   spr = createSprite(-100, canvasHeight / 2);
   spr.addAnimation('flying', ...animationFrames);
-  spr.scale = 0.25; // podés ajustar si querés más chico o más grande
+  spr.scale = 0.25;
 }
 
 function draw() {
