@@ -1,23 +1,20 @@
 let spr;
+let spriteSheet;
+let animationFrames = [];
+let frameCount = 16;
+let frameWidth = 302;
+let frameHeight = 220;
+
 let cnv;
 let startAnimation = true;
 let animationProgress = 0;
 
 function preload() {
-  spr = createSprite(-100, 60, 50, 100);
-  spr.addAnimation('flying',
-    'data/loro_0.png',
-    'data/loro_1.png',
-    'data/loro_2.png',
-    'data/loro_3.png',
-    'data/loro_4.png',
-    'data/loro_5.png',
-    'data/loro_6.png'
-  );
+  spriteSheet = loadImage('data/loro_spritesheet.webp');
 }
 
 function setup() {
-  const canvasHeight = 400;
+  const canvasHeight = 120;
   cnv = createCanvas(windowWidth, canvasHeight);
   cnv.position(0, 0);
   cnv.style('z-index', '9999');
@@ -26,10 +23,14 @@ function setup() {
   cnv.style('top', '0');
   cnv.style('left', '0');
 
-  spr.position.x = -100;
-  spr.position.y = canvasHeight / 2;
+  for (let i = 0; i < frameCount; i++) {
+    let frame = spriteSheet.get(i * frameWidth, 0, frameWidth, frameHeight);
+    animationFrames.push(frame);
+  }
 
-  spr.scale = 0.4; // Tamaño fijo proporcional, sin deformar
+  spr = createSprite(-100, canvasHeight / 2, frameWidth, frameHeight);
+  spr.addAnimation('flying', ...animationFrames);
+  spr.scale = 0.25; // Ajustá esto según necesidad
 }
 
 function draw() {
